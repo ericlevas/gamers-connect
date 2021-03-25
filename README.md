@@ -37,5 +37,7 @@ Once the repository clones, you are setup!
 Ensure that we follow git flow branching structure
 
 ![Git Flow Diagram](https://www.campingcoder.com/post/20180412-git-flow.png)
+
+
 We will be primarily pushing to feature branches, and consolidating on Develop.
 Master will only be used for stable "release" versions.
