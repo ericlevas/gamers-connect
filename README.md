@@ -33,6 +33,23 @@ If you don't have access to the repo, please let me know.
 
 Once the repository clones, you are setup!
 
+# Configuration
+Create a file in the root directory of the repo called 
+nodemon.json
+Paste the following code inside.
+```
+{
+    "env":{
+        "MONGO_USER": "insert Username Here",
+        "MONGO_PASSWORD": "insert Password Here",
+        "MONGO_DB": "events-react-dev"
+    }
+}
+```
+Populate the fields with your mongo information.
+This will allow us to use these environment variables rather than hardcoded values.
+We will setup usernames and passwords at our next meeting.
+
 # Project Management 
 Ensure that we follow git flow branching structure
 
