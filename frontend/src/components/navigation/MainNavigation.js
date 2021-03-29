@@ -15,7 +15,11 @@ const mainNavigation = props => (
                         <ul>
                             {!context.token && <li><NavLink to="/auth">Authenticate</NavLink></li>}
                             <li><NavLink to="/events">Events</NavLink></li>
-                            {context.token && <li><NavLink to="/attending">My Events</NavLink></li>}
+                            {context.token && <React.Fragment>
+                                <li><NavLink to="/attending">My Events</NavLink></li>
+                                <li><button onClick={context.logout}>Logout</button></li>
+                            </React.Fragment>
+                            }
                         </ul>
                     </nav>
                 </header>
