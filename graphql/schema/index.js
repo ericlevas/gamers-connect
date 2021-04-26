@@ -49,6 +49,7 @@ type RootQuery{
     attendings: [Attending!]!
     login(email: String!,password:String!): AuthData!
 }
+
 type RootMutation{
     createEvent(eventInput: EventInput): Event
     createUser(userInput: UserInput): User
