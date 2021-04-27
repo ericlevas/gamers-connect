@@ -5,9 +5,11 @@
     width: 100%;
     height: 3.5rem;
     background: #16ac8b;
-    padding: 0 1rem;
+    padding: 0 2rem;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
 }
 
 .main-navigation__logo h1{
@@ -40,7 +42,7 @@
     font: inherit;
     background: transparent;
     cursor: pointer;
-    vertical-align: center;
+    vertical-align: middle;
     margin: 0;
 }
 
@@ -49,5 +51,7 @@
 .main-navigation__items a.active
 .main-navigation__items button:hover
 .main-navigation__items button:active{
+    background: #ffffff;
+    border-radius: 5px;
     color: rgb(255, 255, 74);
 }

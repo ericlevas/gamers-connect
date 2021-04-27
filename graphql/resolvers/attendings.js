@@ -8,7 +8,7 @@ module.exports = {
             throw new Error('User is not authenticated!');
         }
         try {
-            const attendings = await Attending.find();
+            const attendings = await Attending.find({user: req.userId});
             return attendings.map(attending => {
                 return transformAttending(attending);
             });

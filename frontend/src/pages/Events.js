@@ -86,7 +86,7 @@ class EventPage extends Component {
         const gameTitle = this.gameTitleEl.current.value;
         const date = this.dateEl.current.value;
         const description = this.descriptionEl.current.value;
-        const event = { title, gameTitle, date, description };
+        //const event = { title, gameTitle, date, description };
 
         if (title.trim().length === 0 || gameTitle.trim().length === 0 || this.dateEl.current.value.trim().length === 0 || description.trim().length === 0) {
             return;
@@ -160,7 +160,6 @@ class EventPage extends Component {
     showDetailHandler = eventId=>{
         this.setState(prevState=>{
             const selectedEvent = prevState.events.find(e=> e._id===eventId);
-            console.log(selectedEvent);
             return {selectedEvent: selectedEvent};
         });
     };
@@ -209,7 +208,6 @@ class EventPage extends Component {
     }
 
     render() {
-        console.log("Event is" + this.selectedEvent)
         return (            
             <React.Fragment>
                 {(this.state.creating || this.state.selectedEvent) && <Backdrop />}
