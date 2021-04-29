@@ -75,13 +75,17 @@ class AttendingPage extends Component{
         this.setState({isLoading:true});
         const requestBody = {
             query: `
-                    mutation{
-                        cancelAttending(attendingId: "${attendingId}"){
+                    mutation CancelAttending($id: ID!){
+                        cancelAttending(attendingId: $id){
                             _id
                             title
                         }
                     }
-                `
+                `,
+                variables: {
+                    id: attendingId
+                }
+
         };
 
         fetch('http://localhost:8000/graphql', {
