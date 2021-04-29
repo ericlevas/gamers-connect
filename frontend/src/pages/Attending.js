@@ -120,12 +120,19 @@ class AttendingPage extends Component{
     }
 
     render(){
+        let content = <Spinner/>;
+        if(!this.state.isLoading){
+            content = (
+                <React.Fragment>
+                    <div>
+                        <AttendingList attendings = {this.state.attendingEvents} onDelete ={this.deleteAttendingHandler}/>
+                    </div>
+                </React.Fragment>
+            );
+        }
         return(
         <React.Fragment>
-        {this.state.isLoading ? 
-            <Spinner/> : 
-            (<AttendingList attendings = {this.state.attendingEvents} onDelete ={this.deleteAttendingHandler}/>)
-        }
+            {content}
         </React.Fragment>
         );
     }
