@@ -237,6 +237,7 @@ class EventPage extends Component {
                         );
                     }}
                 </AuthContext.Consumer>
+
                 {(this.state.creating || this.state.selectedEvent) && <Backdrop />}
                 {this.state.creating && (
                     <Modal
