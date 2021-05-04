@@ -106,13 +106,7 @@ export default class App extends React.Component {
               </AuthContext.Provider>
             </React.Fragment>
           </BrowserRouter>
-          <br /><hr /><br />
-          <h2>Instructions:</h2>
-          <ul>
-            <li>Select dates and you will be prompted to create a new event</li>
-            <li>Drag, drop, and resize events</li>
-            <li>Click an event to delete it</li>
-          </ul><hr /><br />
+
           <h2>All Events ({this.state.currentEvents.length})</h2>
           <ul>
             {this.state.currentEvents.map(renderSidebarEvent)}

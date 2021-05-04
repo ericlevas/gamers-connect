@@ -141,7 +141,7 @@ class AuthPage extends Component {
     };
 
     render() {
-        return (
+        return (<div>
             <form onSubmit={this.submitHandler}>
                 <input type="text" className="form-control" placeholder="Email" ref={this.emailEl} />
                 <input type="password" className="form-control" placeholder="Password" ref={this.passwordEl} />
@@ -152,6 +152,13 @@ class AuthPage extends Component {
                 <div className="divider" />
                 <button type="button" className="signup-button" onClick={this.switchModeHandler}>Switch to {this.state.isLogin ? 'Signup' : 'Login'}</button>
             </form>
+            <br /><hr /><br />
+            <h2>Instructions:</h2>
+            <ul>
+                <li>Select dates and you will be prompted to create a new event</li>
+                <li>Drag, drop, and resize events</li>
+                <li>Click an event to delete it</li>
+            </ul><hr /><br /></div>
         );
     }
 }

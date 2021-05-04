@@ -5,6 +5,8 @@ import Backdrop from '../components/backdrop/Backdrop';
 import AuthContext from '../context/auth-context';
 import EventList from '../components/events/eventlist/EventList';
 import Spinner from '../components/spinner/Spinner';
+import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
+
 
 
 class EventPage extends Component {
@@ -14,7 +16,7 @@ class EventPage extends Component {
         isLoading: false,
         selectedEvent: null
     };
-    isActive =true;
+    isActive = true;
 
     constructor(props) {
         super(props);
@@ -36,7 +38,7 @@ class EventPage extends Component {
     };
 
     fetchEvents() {
-        this.setState({isLoading: true});
+        this.setState({ isLoading: true });
         const requestBody = {
             query: `
                     query{
@@ -71,11 +73,11 @@ class EventPage extends Component {
             })
             .then(resData => {
                 const events = resData.data.events;
-                this.setState({ events: events,isLoading:false});
+                this.setState({ events: events, isLoading: false });
             })
             .catch(err => {
                 console.log(err);
-                this.setState({isLoading:false});
+                this.setState({ isLoading: false });
             });
 
     };
@@ -113,12 +115,12 @@ class EventPage extends Component {
                         }
                     }
                 `,
-                variables:{
-                    title: title,
-                    description: description,
-                    gameTitle: gameTitle,
-                    date: date
-                }
+            variables: {
+                title: title,
+                description: description,
+                gameTitle: gameTitle,
+                date: date
+            }
         };
 
         const token = this.context.token;
@@ -139,18 +141,18 @@ class EventPage extends Component {
                 return res.json();
             })
             .then(resData => {
-                this.setState(prevState=>{
+                this.setState(prevState => {
                     const updatedEvents = [...prevState.events];
                     updatedEvents.push({
                         _id: this.context.userId,
-                        title: resData.data.createEvent.title, 
+                        title: resData.data.createEvent.title,
                         description: resData.data.createEvent.description,
                         date: resData.data.createEvent.date,
                         creator: {
                             _id: this.context.userId,
                         }
                     });
-                    return {events: updatedEvents};
+                    return { events: updatedEvents };
                 });
             })
             .catch(err => {
@@ -163,16 +165,16 @@ class EventPage extends Component {
         this.setState({ creating: false, selectedEvent: null });
     };
 
-    showDetailHandler = eventId=>{
-        this.setState(prevState=>{
-            const selectedEvent = prevState.events.find(e=> e._id===eventId);
-            return {selectedEvent: selectedEvent};
+    showDetailHandler = eventId => {
+        this.setState(prevState => {
+            const selectedEvent = prevState.events.find(e => e._id === eventId);
+            return { selectedEvent: selectedEvent };
         });
     };
 
-    attendHandler = () =>{
-        if(!this.context.token){
-            this.setState({selectedEvent:null});
+    attendHandler = () => {
+        if (!this.context.token) {
+            this.setState({ selectedEvent: null });
             return;
         }
         const requestBody = {
@@ -185,9 +187,9 @@ class EventPage extends Component {
                         }
                     }
                 `,
-                variables:{
-                    id: this.state.selectedEvent._id
-                }
+            variables: {
+                id: this.state.selectedEvent._id
+            }
         };
 
         fetch('http://localhost:8000/graphql', {
@@ -195,7 +197,7 @@ class EventPage extends Component {
             body: JSON.stringify(requestBody),
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer '  + this.context.token
+                'Authorization': 'Bearer ' + this.context.token
             }
         })
             .then(res => {
@@ -207,7 +209,7 @@ class EventPage extends Component {
             })
             .then(resData => {
                 console.log(resData);
-                this.setState({selectedEvent:null});
+                this.setState({ selectedEvent: null });
 
             })
             .catch(err => {
@@ -217,8 +219,24 @@ class EventPage extends Component {
     }
 
     render() {
-        return (            
+        return (
             <React.Fragment>
+                <AuthContext.Consumer>
+                    {(context) => {
+                        return (
+                                <nav className="main-navigation__items">
+                                    {!context.token && <Redirect to="/auth" exact />}
+                                    {context.token &&
+                                        <React.Fragment>
+                                            <h2>Welcome to Gamers Connect!</h2>
+                                            <p>You are logged in as -email-.</p>
+                                            <button className="submit-button" onClick={context.logout}>Logout</button>
+                                        </React.Fragment>
+                                    }
+                                </nav>
+                        );
+                    }}
+                </AuthContext.Consumer>
                 {(this.state.creating || this.state.selectedEvent) && <Backdrop />}
                 {this.state.creating && (
                     <Modal
@@ -227,7 +245,7 @@ class EventPage extends Component {
                         canConfirm
                         onCancel={this.modalCancelHandler}
                         onConfirm={this.modalConfirmHandler}
-                        confirmText = "Confirm"
+                        confirmText="Confirm"
                     >
                         <form>
                             <div className="form-control">
@@ -249,7 +267,7 @@ class EventPage extends Component {
                         </form>
                     </Modal>
                 )}
-                {this.state.selectedEvent &&  
+                {this.state.selectedEvent &&
                     (<Modal
                         title={this.state.selectedEvent.title}
                         canCancel
@@ -262,23 +280,22 @@ class EventPage extends Component {
                         <h2>{this.state.selectedEvent.gameTitle}- {new Date(this.state.selectedEvent.date).toLocaleDateString('en-US')}</h2>
                         <p>{this.state.selectedEvent.description}</p>
                     </Modal>)
-                    
                 }
-                
+
                 {this.context.token && (<div className="events-control">
                     <p>Share your own Events!</p>
-                    <button className="btn" onClick={this.startCreateEventHandler}>
+                    <button className="submit-button" onClick={this.startCreateEventHandler}>
                         Create Event
               </button>
                 </div>)}
-                {this.state.isLoading ? 
-                (<Spinner/>)
-                :
-                (<EventList 
-                    events = {this.state.events} 
-                    authUserId={this.context.userId}
-                    onViewDetail={this.showDetailHandler}
-                />)
+                {this.state.isLoading ?
+                    (<Spinner />)
+                    :
+                    (<EventList
+                        events={this.state.events}
+                        authUserId={this.context.userId}
+                        onViewDetail={this.showDetailHandler}
+                    />)
                 }
             </React.Fragment>
         );
