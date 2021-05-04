@@ -15,7 +15,8 @@ type Event{
     title: String!
     gameTitle: String!
     description: String!
-    date: String!
+    startDate: String!
+    endDate: String!
     creator: User!
 }
 
@@ -41,7 +42,8 @@ input EventInput{
     title: String!,
     gameTitle: String!,
     description: String!,
-    date: String!
+    startDate: String!,
+    endDate: String!
 }
 
 type RootQuery{

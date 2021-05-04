@@ -22,7 +22,8 @@ class EventPage extends Component {
         super(props);
         this.titleEl = React.createRef();
         this.gameTitleEl = React.createRef();
-        this.dateEl = React.createRef();
+        this.startDateEl = React.createRef();
+        this.endDateEl = React.createRef();
         this.timeEl = React.createRef();
         this.descriptionEl = React.createRef();
     }
@@ -47,7 +48,8 @@ class EventPage extends Component {
                             title
                             description
                             gameTitle
-                            date
+                            startDate
+                            endDate
                             creator{
                                 _id
                                 email
@@ -86,28 +88,31 @@ class EventPage extends Component {
         this.setState({ creating: false });
         const title = this.titleEl.current.value;
         const gameTitle = this.gameTitleEl.current.value;
-        const date = this.dateEl.current.value;
+        const startDate = this.startDateEl.current.value;
+        const endDate = this.endDateEl.current.value;
         const description = this.descriptionEl.current.value;
         //const event = { title, gameTitle, date, description };
 
-        if (title.trim().length === 0 || gameTitle.trim().length === 0 || this.dateEl.current.value.trim().length === 0 || description.trim().length === 0) {
+        if (title.trim().length === 0 || gameTitle.trim().length === 0 || this.startDateEl.current.value.trim().length === 0 ||this.startDateEl.current.value.trim().length === 0 || description.trim().length === 0) {
             return;
         }
 
         const requestBody = {
             query: `
-                    mutation CreateEvent($title: String!, $description: String!,$gameTitle: String!,$date: String!){
+                    mutation CreateEvent($title: String!, $description: String!,$gameTitle: String!,$startDate: String!,$endDate: String!){
                         createEvent(eventInput:{
                             title: $title,
                             gameTitle: $gameTitle,
                             description: $description,
-                            date: $date,
+                            startDate: $startDate,
+                            endDate: $endDate,
                         })
                         {
                             _id
                             title
                             description
-                            date
+                            startDate
+                            endDate
                             creator{
                                 _id
                                 email
@@ -119,7 +124,8 @@ class EventPage extends Component {
                 title: title,
                 description: description,
                 gameTitle: gameTitle,
-                date: date
+                startDate: startDate,
+                endDate: endDate
             }
         };
 
@@ -147,7 +153,8 @@ class EventPage extends Component {
                         _id: this.context.userId,
                         title: resData.data.createEvent.title,
                         description: resData.data.createEvent.description,
-                        date: resData.data.createEvent.date,
+                        startDate: resData.data.createEvent.startDate,
+                        endDate: resData.data.createEvent.endDate,
                         creator: {
                             _id: this.context.userId,
                         }
@@ -257,8 +264,12 @@ class EventPage extends Component {
                                 <input type="text" id="gameTitle" ref={this.gameTitleEl}></input>
                             </div>
                             <div className="form-control">
-                                <label htmlFor="date">Date</label>
-                                <input type="datetime-local" id="date" ref={this.dateEl}></input>
+                                <label htmlFor="startDate">Date</label>
+                                <input type="datetime-local" id="startDate" ref={this.startDateEl}></input>
+                            </div>
+                            <div className="form-control">
+                                <label htmlFor="endDate">Date</label>
+                                <input type="datetime-local" id="endDate" ref={this.endDateEl}></input>
                             </div>
                             <div className="form-control">
                                 <label htmlFor="description">description</label>

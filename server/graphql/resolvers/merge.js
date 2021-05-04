@@ -56,7 +56,8 @@ const transformEvent = event =>{
     return{
         ...event._doc,
         _id: event.id,
-        date: dateToString(event._doc.date),
+        startDate: dateToString(event._doc.startDate),
+        endDate: dateToString(event._doc.endDate),
         creator: user.bind(this, event.creator)
     };  
 };
