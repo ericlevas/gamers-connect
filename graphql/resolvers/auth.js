@@ -18,7 +18,6 @@ module.exports = {
             });
 
             const result = await user.save();
-
             return { ...result._doc, password: null, _id: result.id };
         } catch (err) {
             throw err;
@@ -36,7 +35,7 @@ module.exports = {
         }
         const token = jwt.sign(
             { userId: user.id, email: user.email },
-            'secretKey',
+            'secretkey',
             { expiresIn: '1h' }
         );
         return {
