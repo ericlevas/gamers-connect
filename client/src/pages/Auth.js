@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-//import './Auth.css';
 import AuthContext from '../context/auth-context';
 
 class AuthPage extends Component {
 
     state = {
-        isLogin: true
+        isLogin: true,
+        flag: ''
     };
 
     static contextType = AuthContext;
@@ -74,6 +74,7 @@ class AuthPage extends Component {
         })
             .then(res => {
                 if (res.status !== 200 && res.status !== 201) {
+                    this.setState({flag: 'Please try again. '});
                     throw new Error('Failed');
                 }
                 return res.json();
@@ -122,6 +123,7 @@ class AuthPage extends Component {
         })
             .then(res => {
                 if (res.status !== 200 && res.status !== 201) {
+                    this.setState({flag: 'Please try again. '});
                     throw new Error('Failed');
                 }
                 return res.json();
@@ -146,6 +148,7 @@ class AuthPage extends Component {
                 <input type="text" className="form-control" placeholder="Email" ref={this.emailEl} />
                 <input type="password" className="form-control" placeholder="Password" ref={this.passwordEl} />
                 <br />
+                {this.state.flag}
                 Forgot <a href="forgot_password.html" className="a">Password?</a>
                 <br /><br />
                 <button type="submit" className="submit-button">Submit</button>
