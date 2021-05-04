@@ -5,7 +5,8 @@ class AuthPage extends Component {
 
     state = {
         isLogin: true,
-        flag: ''
+        flag: '',
+        title: 'Log in'
     };
 
     static contextType = AuthContext;
@@ -18,6 +19,12 @@ class AuthPage extends Component {
 
     switchModeHandler = () => {
         this.setState(prevState => {
+            if (this.state.title == 'Log in') {
+                this.setState({ title: 'Sign up' });
+            }
+            else {
+                this.setState({ title: 'Log in' });
+            }
             return { isLogin: !prevState.isLogin };
         });
     };
@@ -74,7 +81,7 @@ class AuthPage extends Component {
         })
             .then(res => {
                 if (res.status !== 200 && res.status !== 201) {
-                    this.setState({flag: 'Please try again. '});
+                    this.setState({ flag: 'Please try again. ' });
                     throw new Error('Failed');
                 }
                 return res.json();
@@ -123,7 +130,7 @@ class AuthPage extends Component {
         })
             .then(res => {
                 if (res.status !== 200 && res.status !== 201) {
-                    this.setState({flag: 'Please try again. '});
+                    this.setState({ flag: 'Please try again. ' });
                     throw new Error('Failed');
                 }
                 return res.json();
@@ -144,6 +151,7 @@ class AuthPage extends Component {
 
     render() {
         return (<div>
+            <h2>{this.state.title}</h2>
             <form onSubmit={this.submitHandler}>
                 <input type="text" className="form-control" placeholder="Email" ref={this.emailEl} />
                 <input type="password" className="form-control" placeholder="Password" ref={this.passwordEl} />
