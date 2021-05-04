@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Modal from '../components/modal/Modal';
-import './Events.css';
 import Backdrop from '../components/backdrop/Backdrop';
 import AuthContext from '../context/auth-context';
 import EventList from '../components/events/eventlist/EventList';
@@ -93,7 +92,7 @@ class EventPage extends Component {
         const description = this.descriptionEl.current.value;
         //const event = { title, gameTitle, date, description };
 
-        if (title.trim().length === 0 || gameTitle.trim().length === 0 || this.startDateEl.current.value.trim().length === 0 ||this.startDateEl.current.value.trim().length === 0 || description.trim().length === 0) {
+        if (title.trim().length === 0 || gameTitle.trim().length === 0 || this.startDateEl.current.value.trim().length === 0 || this.startDateEl.current.value.trim().length === 0 || description.trim().length === 0) {
             return;
         }
 
@@ -228,23 +227,6 @@ class EventPage extends Component {
     render() {
         return (
             <React.Fragment>
-                <AuthContext.Consumer>
-                    {(context) => {
-                        return (
-                                <nav className="main-navigation__items">
-                                    {!context.token && <Redirect to="/auth" exact />}
-                                    {context.token &&
-                                        <React.Fragment>
-                                            <h2>Welcome to Gamers Connect!</h2>
-                                            <p>You are logged in as -email-.</p>
-                                            <button className="submit-button" onClick={context.logout}>Logout</button>
-                                        </React.Fragment>
-                                    }
-                                </nav>
-                        );
-                    }}
-                </AuthContext.Consumer>
-
                 {(this.state.creating || this.state.selectedEvent) && <Backdrop />}
                 {this.state.creating && (
                     <Modal

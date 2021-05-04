@@ -11,6 +11,9 @@ import AuthPage from './pages/Auth';
 import EventPage from './pages/Events';
 import AttendingPage from './pages/Attending';
 import AuthContext from './context/auth-context';
+import Backdrop from './components/backdrop/Backdrop';
+import Modal from './components/modal/Modal';
+import Dashboard from './pages/Dashboard';
 
 export default class App extends React.Component {
   state = {
@@ -90,14 +93,14 @@ export default class App extends React.Component {
                   <Route path="auth">
                     <AuthPage />
                   </Route>
-                  {this.state.token && <Redirect from="/" to="/events" exact />}
+                  {this.state.token && <Redirect from="/" to="/dashboard" exact />}
                   {this.state.token && (
-                    <Redirect from="/auth" to="/events" exact />
+                    <Redirect from="/auth" to="/dashboard" exact />
                   )}
                   {!this.state.token && (
                     <Route path="/auth" component={AuthPage} />
                   )}
-                  <Route path="/events" component={EventPage} />
+                  <Route path="/dashboard" component={Dashboard} />
                   {this.state.token && (
                     <Route path="/attending" component={AttendingPage} />
                   )}
@@ -140,8 +143,12 @@ export default class App extends React.Component {
   }
 
   handleEventClick = (clickInfo) => {
+    //If user is event owner
     if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
       clickInfo.event.remove()
+    
+    //If user is not event owner
+
     }
   }
 
