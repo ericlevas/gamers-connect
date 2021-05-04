@@ -222,7 +222,7 @@ class EventPage extends Component {
                 {(this.state.creating || this.state.selectedEvent) && <Backdrop />}
                 {this.state.creating && (
                     <Modal
-                        title="Add Event"
+                        title="New Event"
                         canCancel
                         canConfirm
                         onCancel={this.modalCancelHandler}
