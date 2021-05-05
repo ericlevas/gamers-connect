@@ -4,9 +4,6 @@ import Backdrop from '../components/backdrop/Backdrop';
 import AuthContext from '../context/auth-context';
 import EventList from '../components/events/eventlist/EventList';
 import Spinner from '../components/spinner/Spinner';
-import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
-
-
 
 class EventPage extends Component {
     state = {

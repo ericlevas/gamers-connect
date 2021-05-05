@@ -8,19 +8,19 @@ import interactionPlugin from '@fullcalendar/interaction'
 import { INITIAL_EVENTS, createEventId } from './event-utils'
 import Logo from '../media/logo.png'
 import AuthPage from './pages/Auth';
-import EventPage from './pages/Events';
 import AttendingPage from './pages/Attending';
 import AuthContext from './context/auth-context';
-import Backdrop from './components/backdrop/Backdrop';
-import Modal from './components/modal/Modal';
 import Dashboard from './pages/Dashboard';
+import Modal from './components/modal/Modal';
+import Backdrop from './components/backdrop/Backdrop';
 
 export default class App extends React.Component {
   state = {
     token: null,
     userId: null,
     weekendsVisible: true,
-    currentEvents: []
+    currentEvents: [],
+    creating: true,
   }
 
   login = (token, userId, tokenExpiration) => {
@@ -29,6 +29,10 @@ export default class App extends React.Component {
 
   logout = () => {
     this.setState({ token: null, userId: null });
+  };
+
+  modalCancelHandler = () => {
+    this.setState({ creating: false, selectedEvent: null });
   };
 
   render() {
@@ -143,13 +147,41 @@ export default class App extends React.Component {
   }
 
   handleEventClick = (clickInfo) => {
-    //If user is event owner
-    if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-      clickInfo.event.remove()
+    //Display popup with event info
+    <React.Fragment>
+      {(this.state.creating) && <Backdrop />}
+      {
+        this.state.creating && (
+          <Modal
+            title="New Event"
+            canCancel
+            canConfirm
+            onCancel={this.modalCancelHandler}
+            onConfirm={clickInfo.event.remove()}
+            confirmText="Confirm">
+            <p> test </p>
+          </Modal>)
+      }</React.Fragment>
     
-    //If user is not event owner
+    
+    //If user is not logged in, no buttons displayed OR inform user to login
+    //Conditional: If !token
 
-    }
+    //If user is event owner, include delete button
+    //Conditional: If token && (userID == creatorID)
+    //if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
+      //clickInfo.event.remove()
+      //Update events database and attending database
+
+      //If user is not event owner or member of group, include join button
+      //Conditional: If token && (userID != creatorID) && !attending
+      //Update attending database
+
+      //If user is not event owner but is member of group, include leave button
+      //Conditional: If token && (userID != creatorID) && attending
+      //Update attending database
+
+    //}
   }
 
   handleEvents = (events) => {
