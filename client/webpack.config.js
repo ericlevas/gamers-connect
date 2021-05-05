@@ -5,6 +5,11 @@ const packageMeta = require('./package.json')
 module.exports = {
   mode: 'development',
   devtool: 'source-map',
+  devServer: {
+    historyApiFallback: true,
+    contentBase: './',
+    hot: true
+  },
   entry: './src/main.jsx',
   resolve: {
     extensions: ['.js', '.jsx']
