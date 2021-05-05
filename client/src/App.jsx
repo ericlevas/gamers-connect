@@ -21,7 +21,21 @@ export default class App extends React.Component {
     weekendsVisible: true,
     currentEvents: [],
     creating: true,
-  }
+    events: [],
+    isLoading: false,
+    selectedEvent: null
+  };
+  isActive = true;
+
+constructor(props) {
+    super(props);
+    this.titleEl = React.createRef();
+    this.gameTitleEl = React.createRef();
+    this.startDateEl = React.createRef();
+    this.endDateEl = React.createRef();
+    this.timeEl = React.createRef();
+    this.descriptionEl = React.createRef();
+}
 
   login = (token, userId, tokenExpiration) => {
     this.setState({ token: token, userId: userId });
@@ -72,7 +86,40 @@ export default class App extends React.Component {
           //eventChange={function(){}}
           //eventRemove={function(){}}
           />
-
+        {(this.state.creating) && <Backdrop />}
+        {this.state.creating && (
+                    <Modal
+                        title="New Event"
+                        canCancel
+                        canConfirm
+                        onCancel={this.modalCancelHandler}
+                        onConfirm={this.modalConfirmHandler}
+                        confirmText="Confirm"
+                    >
+                        <form>
+                            <div className="form-control">
+                                <label htmlFor="title">Title</label>
+                                <input type="text" id="title" ref={this.titleEl}></input>
+                            </div>
+                            <div className="form-control">
+                                <label htmlFor="gameTitle">Game Title</label>
+                                <input type="text" id="gameTitle" ref={this.gameTitleEl}></input>
+                            </div>
+                            <div className="form-control">
+                                <label htmlFor="startDate">Date</label>
+                                <input type="datetime-local" id="startDate" ref={this.startDateEl}></input>
+                            </div>
+                            <div className="form-control">
+                                <label htmlFor="endDate">Date</label>
+                                <input type="datetime-local" id="endDate" ref={this.endDateEl}></input>
+                            </div>
+                            <div className="form-control">
+                                <label htmlFor="description">description</label>
+                                <textarea id="description" rows="4" ref={this.descriptionEl}></textarea>
+                            </div>
+                        </form>
+                    </Modal>
+                )}
         </div>
       </div>
     )
@@ -129,25 +176,116 @@ export default class App extends React.Component {
     })
   }
 
+  modalConfirmHandler = () => {
+    this.setState({ creating: false });
+    const title = this.titleEl.current.value;
+    const gameTitle = this.gameTitleEl.current.value;
+    const startDate = this.startDateEl.current.value;
+    const endDate = this.endDateEl.current.value;
+    const description = this.descriptionEl.current.value;
+    //const event = { title, gameTitle, date, description };
+
+    if (title.trim().length === 0 || gameTitle.trim().length === 0 || this.startDateEl.current.value.trim().length === 0 || this.startDateEl.current.value.trim().length === 0 || description.trim().length === 0) {
+        return;
+    }
+
+    const requestBody = {
+        query: `
+                mutation CreateEvent($title: String!, $description: String!,$gameTitle: String!,$startDate: String!,$endDate: String!){
+                    createEvent(eventInput:{
+                        title: $title,
+                        gameTitle: $gameTitle,
+                        description: $description,
+                        startDate: $startDate,
+                        endDate: $endDate,
+                    })
+                    {
+                        _id
+                        title
+                        description
+                        startDate
+                        endDate
+                        creator{
+                            _id
+                            email
+                        }
+                    }
+                }
+            `,
+        variables: {
+            title: title,
+            description: description,
+            gameTitle: gameTitle,
+            startDate: startDate,
+            endDate: endDate
+        }
+    };
+
+    const token = this.context.token;
+
+    fetch('http://localhost:8000/graphql', {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        }
+    })
+        .then(res => {
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Failed');
+
+            }
+            return res.json();
+        })
+        .then(resData => {
+            this.setState(prevState => {
+                const updatedEvents = [...prevState.events];
+                updatedEvents.push({
+                    _id: this.context.userId,
+                    title: resData.data.createEvent.title,
+                    description: resData.data.createEvent.description,
+                    startDate: resData.data.createEvent.startDate,
+                    endDate: resData.data.createEvent.endDate,
+                    creator: {
+                        _id: this.context.userId,
+                    }
+                });
+                return { events: updatedEvents };
+            });
+        })
+        .catch(err => {
+            console.log(err);
+        });
+
+};
+
+  
+
   handleDateSelect = (selectInfo) => {
-    let title = prompt('Please enter a new title for your event')
+    //let title = prompt('Please enter a new title for your event')
+    this.setState({creating: true});
     let calendarApi = selectInfo.view.calendar
+      
+      
 
     calendarApi.unselect() // clear date selection
 
-    if (title) {
-      calendarApi.addEvent({
-        id: createEventId(),
-        title,
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
-        allDay: selectInfo.allDay
-      })
-    }
+    // if (title) {
+    //   calendarApi.addEvent({
+    //     id: createEventId(),
+    //     title,
+    //     start: selectInfo.startStr,
+    //     end: selectInfo.endStr,
+    //     allDay: selectInfo.allDay
+    //   })
+    // }
   }
 
   handleEventClick = (clickInfo) => {
     //Display popup with event info
+    console.log(clickInfo);
+    
     <React.Fragment>
       {(this.state.creating) && <Backdrop />}
       {
