@@ -10,7 +10,7 @@
   
   .modal__header {
     padding: 1rem;
-    background: #5101d1;
+    background: rgb(45, 62, 80);
     color: white;
   }
   
@@ -35,4 +35,3 @@
       left: calc((100% - 30rem) / 2);
     }
   }
-  
