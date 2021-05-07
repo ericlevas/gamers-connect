@@ -210,12 +210,12 @@ export default class AuthPage extends Component {
                                     <input type="text" id="gameTitle" ref={this.gameTitleEl}></input>
                                 </div>
                                 <div className="form-control">
-                                    <label htmlFor="startDate">Date</label>
-                                    <input type="datetime-local" id="startDate" ref={this.startDateEl}></input>
+                                    <label htmlFor="start">Date</label>
+                                    <input type="datetime-local" id="start" ref={this.startEl}></input>
                                 </div>
                                 <div className="form-control">
-                                    <label htmlFor="endDate">Date</label>
-                                    <input type="datetime-local" id="endDate" ref={this.endDateEl}></input>
+                                    <label htmlFor="end">Date</label>
+                                    <input type="datetime-local" id="end" ref={this.endEl}></input>
                                 </div>
                                 <div className="form-control">
                                     <label htmlFor="description">description</label>

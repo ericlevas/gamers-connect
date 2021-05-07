@@ -9,8 +9,8 @@ const eventList = props=> {
                 eventId ={event._id} 
                 title={event.title}
                 gameTitle ={event.gameTitle} 
-                startDate={event.startDate}
-                endDate={event.endDate}
+                start={event.start}
+                end={event.end}
                 userId={props.authUserId}
                 creatorId ={event.creator._id}
                 onDetail={props.onViewDetail}

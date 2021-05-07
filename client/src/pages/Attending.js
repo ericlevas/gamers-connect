@@ -31,8 +31,8 @@ class AttendingPage extends Component{
                                 _id
                                 title
                                 gameTitle
-                                startDate
-                                endDate
+                                start
+                                end
                             }
                         }
                     }

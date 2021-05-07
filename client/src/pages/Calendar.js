@@ -62,8 +62,8 @@ export default class Calendar extends Component {
     handleDateSelect = (selectInfo) => {
         if (this.state.token) {
             this.setState({ creating: true });
-            //this.setState({ startDate: selectInfo.startStr });
-            //this.setState({ endDate: selectInfo.endStr });
+            //this.setState({ start: selectInfo.startStr });
+            //this.setState({ end: selectInfo.endStr });
         }
         else {
             alert('Please login to create an event.')

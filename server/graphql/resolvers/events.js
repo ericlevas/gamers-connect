@@ -22,8 +22,8 @@ module.exports = {
             title: args.eventInput.title,
             description: args.eventInput.description,
             gameTitle: args.eventInput.gameTitle,
-            startDate: new Date(args.eventInput.startDate),
-            endDate: new Date(args.eventInput.endDate),
+            start: new Date(args.eventInput.start),
+            end: new Date(args.eventInput.end),
             creator: req.userId
         });
         let createdEvent;

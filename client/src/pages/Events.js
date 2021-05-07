@@ -33,8 +33,6 @@ export default class EventPage extends Component {
         super(props);
         this.titleEl = React.createRef();
         this.gameTitleEl = React.createRef();
-        this.startDateEl = React.createRef();
-        this.endDateEl = React.createRef();
         this.timeEl = React.createRef();
         this.descriptionEl = React.createRef();
     }
@@ -59,8 +57,8 @@ export default class EventPage extends Component {
                             title
                             description
                             gameTitle
-                            startDate
-                            endDate
+                            start
+                            end
                             creator{
                                 _id
                                 email
@@ -92,15 +90,14 @@ export default class EventPage extends Component {
                 console.log(err);
                 this.setState({ isLoading: false });
             });
-
     };
 
     modalConfirmHandler = () => {
         this.setState({ creating: false });
         const title = this.titleEl.current.value;
         const gameTitle = this.gameTitleEl.current.value;
-        const startDate = this.state.startD;
-        const endDate = this.state.endD;
+        const start = this.state.startD;
+        const end = this.state.endD;
         const description = this.descriptionEl.current.value;
         //const event = { title, gameTitle, date, description };
 
@@ -110,20 +107,20 @@ export default class EventPage extends Component {
 
         const requestBody = {
             query: `
-                    mutation CreateEvent($title: String!, $description: String!,$gameTitle: String!,$startDate: String!,$endDate: String!){
+                    mutation CreateEvent($title: String!, $description: String!,$gameTitle: String!,$start: String!,$end: String!){
                         createEvent(eventInput:{
                             title: $title,
                             gameTitle: $gameTitle,
                             description: $description,
-                            startDate: $startDate,
-                            endDate: $endDate,
+                            start: $start,
+                            end: $end,
                         })
                         {
                             _id
                             title
                             description
-                            startDate
-                            endDate
+                            start
+                            end
                             creator{
                                 _id
                                 email
@@ -135,8 +132,8 @@ export default class EventPage extends Component {
                 title: title,
                 description: description,
                 gameTitle: gameTitle,
-                startDate: startDate,
-                endDate: endDate
+                start: start,
+                end: end
             }
         };
 
@@ -164,8 +161,8 @@ export default class EventPage extends Component {
                         _id: this.context.userId,
                         title: resData.data.createEvent.title,
                         description: resData.data.createEvent.description,
-                        startDate: resData.data.createEvent.startDate,
-                        endDate: resData.data.createEvent.endDate,
+                        start: resData.data.createEvent.start,
+                        end: resData.data.createEvent.end,
                         creator: {
                             _id: this.context.userId,
                         }
@@ -280,14 +277,6 @@ export default class EventPage extends Component {
                                 </Modal>)
                             }
 
-                            {/*{this.context.token && (<div className="events-control">
-                                <p>Share your own Events!</p>
-                                <button className="submit-button" onClick={this.startCreateEventHandler}>
-                                    Create Event
-                                </button>
-                            </div>
-                            )
-                            }*/}
                             <br /><h2>All Events</h2>
                             {this.state.isLoading ?
                                 (<Spinner />)
@@ -312,6 +301,7 @@ export default class EventPage extends Component {
                         toggle weekends
                         </label>
                     </div>
+
                     <FullCalendar
                         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                         headerToolbar={{
@@ -326,7 +316,7 @@ export default class EventPage extends Component {
                         dayMaxEvents={true}
                         weekends={this.state.weekendsVisible}
                         initialEvents={INITIAL_EVENTS}
-                        //events={INITIAL_EVENTS}
+                        events={this.state.events}
                         select={this.handleDateSelect}
                         eventContent={renderEventContent}
                         eventClick={this.handleEventClick}
