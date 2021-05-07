@@ -178,9 +178,11 @@ export default class AuthPage extends Component {
                             <br /><hr /><br />
                             <h2>Instructions:</h2>
                             <ul>
-                                <li>Select dates and you will be prompted to create a new event</li>
-                                <li>Drag, drop, and resize events</li>
-                                <li>Click an event to delete it</li>
+                                <li>Create an account or log in to create or view groups</li>
+                                <li>Select a date and you will be prompted to create a new group</li>
+                                <li>Select an event to view its details, delete, or join it</li>
+                                <li>When in week or day view, drag and drop to create events</li>
+                                
                             </ul><hr /><br />
                         </div>
                     </div>
