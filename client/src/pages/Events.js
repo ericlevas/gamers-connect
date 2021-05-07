@@ -4,13 +4,19 @@ import Backdrop from '../components/backdrop/Backdrop';
 import AuthContext from '../context/auth-context';
 import EventList from '../components/events/eventlist/EventList';
 import Spinner from '../components/spinner/Spinner';
+import { Redirect } from 'react-router-dom';
+import Logo from '../../media/logo.png'
+import Calendar from './Calendar';
 
-class EventPage extends Component {
+export default class EventPage extends Component {
     state = {
         creating: false,
+        viewing: false,
         events: [],
         isLoading: false,
-        selectedEvent: null
+        selectedEvent: null,
+        weekendsVisible: true,
+        currentEvents: [],
     };
     isActive = true;
 
@@ -223,74 +229,157 @@ class EventPage extends Component {
 
     render() {
         return (
-            <React.Fragment>
-                {(this.state.creating || this.state.selectedEvent) && <Backdrop />}
-                {this.state.creating && (
-                    <Modal
-                        title="New Event"
-                        canCancel
-                        canConfirm
-                        onCancel={this.modalCancelHandler}
-                        onConfirm={this.modalConfirmHandler}
-                        confirmText="Confirm"
-                    >
-                        <form>
-                            <div className="form-control">
-                                <label htmlFor="title">Title</label>
-                                <input type="text" id="title" ref={this.titleEl}></input>
-                            </div>
-                            <div className="form-control">
-                                <label htmlFor="gameTitle">Game Title</label>
-                                <input type="text" id="gameTitle" ref={this.gameTitleEl}></input>
-                            </div>
-                            <div className="form-control">
-                                <label htmlFor="startDate">Date</label>
-                                <input type="datetime-local" id="startDate" ref={this.startDateEl}></input>
-                            </div>
-                            <div className="form-control">
-                                <label htmlFor="endDate">Date</label>
-                                <input type="datetime-local" id="endDate" ref={this.endDateEl}></input>
-                            </div>
-                            <div className="form-control">
-                                <label htmlFor="description">description</label>
-                                <textarea id="description" rows="4" ref={this.descriptionEl}></textarea>
-                            </div>
-                        </form>
-                    </Modal>
-                )}
-                {this.state.selectedEvent &&
-                    (<Modal
-                        title={this.state.selectedEvent.title}
-                        canCancel
-                        canConfirm
-                        onCancel={this.modalCancelHandler}
-                        onConfirm={this.attendHandler}
-                        confirmText={this.context.token ? 'Join' : 'Confirm'}
-                    >
-                        <h1>{this.state.selectedEvent.title}</h1>
-                        <h2>{this.state.selectedEvent.gameTitle}- {new Date(this.state.selectedEvent.date).toLocaleDateString('en-US')}</h2>
-                        <p>{this.state.selectedEvent.description}</p>
-                    </Modal>)
-                }
+            <div className='app'>
+                <div className='app-sidebar'>
+                    <div className='app-sidebar-section'>
+                        <h1><img src={Logo} alt="Gamers Connect"></img></h1>
+                        <hr /><br />
+                        <React.Fragment>
+                            <AuthContext.Consumer>
+                                {(context) => {
+                                    return (
+                                        <nav className="main-navigation-items">
+                                            {!context.token && <Redirect to="/auth" exact />}
+                                            {context.token &&
+                                                <React.Fragment>
+                                                    <h2>Welcome to Gamers Connect!</h2>
+                                                    <p className="login-email">You are logged in.</p>
+                                                    <button type="button" className="submit-button" onClick={this.manageAccount}>Manage Account</button>
+                                                    <div className="divider" />
+                                                    <button className="signup-button" onClick={context.logout}>Logout</button>
+                                                    <br /><br />
+                                                </React.Fragment>
+                                            }
+                                            <hr />
+                                        </nav>
+                                    );
+                                }}
+                            </AuthContext.Consumer>
+                        </React.Fragment >
+                        <React.Fragment>
+                            {(this.state.creating || this.state.selectedEvent) && <Backdrop />}
+                            {this.state.creating && (
+                                <Modal
+                                    title="New Event"
+                                    canCancel
+                                    canConfirm
+                                    onCancel={this.modalCancelHandler}
+                                    onConfirm={this.modalConfirmHandler}
+                                    confirmText="Confirm"
+                                >
+                                    <form>
+                                        <div className="form-control">
+                                            <label htmlFor="title">Title</label>
+                                            <input type="text" id="title" ref={this.titleEl}></input>
+                                        </div>
+                                        <div className="form-control">
+                                            <label htmlFor="gameTitle">Game Title</label>
+                                            <input type="text" id="gameTitle" ref={this.gameTitleEl}></input>
+                                        </div>
+                                        <div className="form-control">
+                                            <label htmlFor="startDate">Date</label>
+                                            <input type="datetime-local" id="startDate" ref={this.startDateEl}></input>
+                                        </div>
+                                        <div className="form-control">
+                                            <label htmlFor="endDate">Date</label>
+                                            <input type="datetime-local" id="endDate" ref={this.endDateEl}></input>
+                                        </div>
+                                        <div className="form-control">
+                                            <label htmlFor="description">description</label>
+                                            <textarea id="description" rows="4" ref={this.descriptionEl}></textarea>
+                                        </div>
+                                    </form>
+                                </Modal>
+                            )
+                            }
+                            {this.state.selectedEvent &&
+                                (<Modal
+                                    title={this.state.selectedEvent.title}
+                                    canCancel
+                                    canConfirm
+                                    onCancel={this.modalCancelHandler}
+                                    onConfirm={this.attendHandler}
+                                    confirmText={this.context.token ? 'Join' : 'Confirm'}
+                                >
+                                    <h1>{this.state.selectedEvent.title}</h1>
+                                    <h2>{this.state.selectedEvent.gameTitle}- {new Date(this.state.selectedEvent.date).toLocaleDateString('en-US')}</h2>
+                                    <p>{this.state.selectedEvent.description}</p>
+                                </Modal>)
+                            }
 
-                {this.context.token && (<div className="events-control">
-                    <p>Share your own Events!</p>
-                    <button className="submit-button" onClick={this.startCreateEventHandler}>
-                        Create Event
-              </button>
-                </div>)}
-                {this.state.isLoading ?
-                    (<Spinner />)
-                    :
-                    (<EventList
-                        events={this.state.events}
-                        authUserId={this.context.userId}
-                        onViewDetail={this.showDetailHandler}
-                    />)
-                }
-            </React.Fragment>
+                            {this.context.token && (<div className="events-control">
+                                <p>Share your own Events!</p>
+                                <button className="submit-button" onClick={this.startCreateEventHandler}>
+                                    Create Event
+                                </button>
+                            </div>
+                            )
+                            }
+                            <h2>My Events</h2>
+                            {this.state.isLoading ?
+                                (<Spinner />)
+                                :
+                                (<EventList
+                                    events={this.state.events}
+                                    authUserId={this.context.userId}
+                                    onViewDetail={this.showDetailHandler}
+                                />)
+                            }
+                        </React.Fragment>
+                    </div>
+                </div>
+                <div className='app-main'>
+                    <Calendar />
+                    {(this.state.creating) && <Backdrop />}
+                    {this.state.creating && (
+                        <Modal
+                            title="New Event"
+                            canCancel
+                            canConfirm
+                            onCancel={this.modalCancelHandler}
+                            onConfirm={this.modalConfirmHandler}
+                            confirmText="Confirm"
+                        >
+                            <form>
+                                <div className="form-control">
+                                    <label htmlFor="title">Title</label>
+                                    <input type="text" id="title" ref={this.titleEl}></input>
+                                </div>
+                                <div className="form-control">
+                                    <label htmlFor="gameTitle">Game Title</label>
+                                    <input type="text" id="gameTitle" ref={this.gameTitleEl}></input>
+                                </div>
+                                <div className="form-control">
+                                    <label htmlFor="startDate">Date</label>
+                                    <input type="datetime-local" id="startDate" ref={this.startDateEl}></input>
+                                </div>
+                                <div className="form-control">
+                                    <label htmlFor="endDate">Date</label>
+                                    <input type="datetime-local" id="endDate" ref={this.endDateEl}></input>
+                                </div>
+                                <div className="form-control">
+                                    <label htmlFor="description">description</label>
+                                    <textarea id="description" rows="4" ref={this.descriptionEl}></textarea>
+                                </div>
+                            </form>
+                        </Modal>
+                    )}
+                    {(this.state.viewing) && <Backdrop />}
+                    {
+                        this.state.viewing && (
+                            <Modal
+                                title="Event Name"
+                                canCancel
+                                canConfirm
+                                onCancel={this.modalCancelHandler}
+                                onConfirm={this.attendHandler}
+                                confirmText="Confirm"
+                            >
+                                <p>Would you like to join this event?</p>
+                            </Modal>
+                        )}
+                </div>
+            </div>
         );
     }
 }
-
-export default EventPage;

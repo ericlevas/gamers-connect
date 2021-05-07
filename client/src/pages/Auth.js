@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 import AuthContext from '../context/auth-context';
+import Logo from '../../media/logo.png'
+import Modal from '../components/modal/Modal';
+import Backdrop from '../components/backdrop/Backdrop';
+import Calendar from './Calendar';
 
-class AuthPage extends Component {
+export default class AuthPage extends Component {
 
     state = {
         isLogin: true,
         flag: '',
-        title: 'Log in'
+        title: 'Log in',
+        weekendsVisible: true,
+        currentEvents: [],
     };
 
     static contextType = AuthContext;
@@ -150,28 +156,88 @@ class AuthPage extends Component {
     };
 
     render() {
-        return (<div>
-            <h2>{this.state.title}</h2>
-            <form onSubmit={this.submitHandler}>
-                <input type="text" className="form-control" placeholder="Email" ref={this.emailEl} />
-                <input type="password" className="form-control" placeholder="Password" ref={this.passwordEl} />
-                <br />
-                {this.state.flag}
-                Forgot <a href="forgot_password.html" className="a">Password?</a>
-                <br /><br />
-                <button type="submit" className="submit-button">Submit</button>
-                <div className="divider" />
-                <button type="button" className="signup-button" onClick={this.switchModeHandler}>Switch to {this.state.isLogin ? 'Signup' : 'Login'}</button>
-            </form>
-            <br /><hr /><br />
-            <h2>Instructions:</h2>
-            <ul>
-                <li>Select dates and you will be prompted to create a new event</li>
-                <li>Drag, drop, and resize events</li>
-                <li>Click an event to delete it</li>
-            </ul><hr /><br /></div>
+        return (
+            <div className='app'>
+                <div className='app-sidebar'>
+                    <div className='app-sidebar-section'>
+                        <h1><img src={Logo} alt="Gamers Connect"></img></h1>
+                        <hr /><br />
+                        <div>
+                            <h2>{this.state.title}</h2>
+                            <form onSubmit={this.submitHandler}>
+                                <input type="text" className="form-control" placeholder="Email" ref={this.emailEl} />
+                                <input type="password" className="form-control" placeholder="Password" ref={this.passwordEl} />
+                                <br />
+                                {this.state.flag}
+                                Forgot <a href="forgot_password.html" className="a">Password?</a>
+                                <br /><br />
+                                <button type="submit" className="submit-button">Submit</button>
+                                <div className="divider" />
+                                <button type="button" className="signup-button" onClick={this.switchModeHandler}>Switch to {this.state.isLogin ? 'Signup' : 'Login'}</button>
+                            </form>
+                            <br /><hr /><br />
+                            <h2>Instructions:</h2>
+                            <ul>
+                                <li>Select dates and you will be prompted to create a new event</li>
+                                <li>Drag, drop, and resize events</li>
+                                <li>Click an event to delete it</li>
+                            </ul><hr /><br />
+                        </div>
+                    </div>
+                </div>
+
+                <div className='app-main'>
+                    <Calendar />
+                    {(this.state.creating) && <Backdrop />}
+                    {this.state.creating && (
+                        <Modal
+                            title="New Event"
+                            canCancel
+                            canConfirm
+                            onCancel={this.modalCancelHandler}
+                            onConfirm={this.modalConfirmHandler}
+                            confirmText="Confirm"
+                        >
+                            <form>
+                                <div className="form-control">
+                                    <label htmlFor="title">Title</label>
+                                    <input type="text" id="title" ref={this.titleEl}></input>
+                                </div>
+                                <div className="form-control">
+                                    <label htmlFor="gameTitle">Game Title</label>
+                                    <input type="text" id="gameTitle" ref={this.gameTitleEl}></input>
+                                </div>
+                                <div className="form-control">
+                                    <label htmlFor="startDate">Date</label>
+                                    <input type="datetime-local" id="startDate" ref={this.startDateEl}></input>
+                                </div>
+                                <div className="form-control">
+                                    <label htmlFor="endDate">Date</label>
+                                    <input type="datetime-local" id="endDate" ref={this.endDateEl}></input>
+                                </div>
+                                <div className="form-control">
+                                    <label htmlFor="description">description</label>
+                                    <textarea id="description" rows="4" ref={this.descriptionEl}></textarea>
+                                </div>
+                            </form>
+                        </Modal>
+                    )}
+                    {(this.state.viewing) && <Backdrop />}
+                    {
+                        this.state.viewing && (
+                            <Modal
+                                title="Event Name"
+                                canCancel
+                                canConfirm
+                                onCancel={this.modalCancelHandler}
+                                onConfirm={this.attendHandler}
+                                confirmText="Confirm"
+                            >
+                                <p>Would you like to join this event?</p>
+                            </Modal>
+                        )}
+                </div>
+            </div>
         );
     }
 }
-
-export default AuthPage;
