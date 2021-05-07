@@ -3,15 +3,70 @@ import FullCalendar, { formatDate } from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { INITIAL_EVENTS, createEventId } from '../event-utils'
 import AuthContext from '../context/auth-context';
 
 export default class Calendar extends Component {
     state = {
         weekendsVisible: true,
-        currentEvents: [],
+        events: [],
         creating: false,
         viewing: false,
+    };
+    isActive = true;
+
+    componentDidMount() {
+        this.fetchEvents();
+    }
+
+    static contextType = AuthContext;
+
+    startCreateEventHandler = () => {
+        this.setState({ creating: true });
+    };
+
+    fetchEvents() {
+        this.setState({ isLoading: true });
+        const requestBody = {
+            query: `
+                    query{
+                        events{
+                            _id
+                            title
+                            description
+                            gameTitle
+                            start
+                            end
+                            creator{
+                                _id
+                                email
+                            }
+                        }
+                    }
+                `
+        };
+
+        fetch('http://localhost:8000/graphql', {
+            method: 'POST',
+            body: JSON.stringify(requestBody),
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(res => {
+                if (res.status !== 200 && res.status !== 201) {
+                    throw new Error('Failed');
+
+                }
+                return res.json();
+            })
+            .then(resData => {
+                const events = resData.data.events;
+                this.setState({ events: events, isLoading: false });
+            })
+            .catch(err => {
+                console.log(err);
+                this.setState({ isLoading: false });
+            });
     };
 
     render() {
@@ -40,8 +95,7 @@ export default class Calendar extends Component {
                     selectMirror={true}
                     dayMaxEvents={true}
                     weekends={this.state.weekendsVisible}
-                    initialEvents={INITIAL_EVENTS}
-                    //events={INITIAL_EVENTS}
+                    events={this.state.events}
                     select={this.handleDateSelect}
                     eventContent={renderEventContent}
                     eventClick={this.handleEventClick}
@@ -60,6 +114,7 @@ export default class Calendar extends Component {
         })
     }
     handleDateSelect = (selectInfo) => {
+        let calendarApi = selectInfo.view.calendar;
         if (this.state.token) {
             this.setState({ creating: true });
             //this.setState({ start: selectInfo.startStr });
@@ -68,20 +123,7 @@ export default class Calendar extends Component {
         else {
             alert('Please login to create an event.')
         }
-        //let title = prompt('Please enter a new title for your event')
-
-        let calendarApi = selectInfo.view.calendar;
         calendarApi.unselect() // clear date selection
-
-        // if (title) {
-        //   calendarApi.addEvent({
-        //     id: createEventId(),
-        //     title,
-        //     start: selectInfo.startStr,
-        //     end: selectInfo.endStr,
-        //     allDay: selectInfo.allDay
-        //   })
-        // }
     }
 
     handleEventClick = (clickInfo) => {
@@ -91,8 +133,6 @@ export default class Calendar extends Component {
         else {
             alert('Please login to view an event.')
         }
-
-        //Conditional: If !token
 
         //If user is event owner, include delete button
         //Conditional: If token && (userID == creatorID)
@@ -107,8 +147,6 @@ export default class Calendar extends Component {
         //If user is not event owner but is member of group, include leave button
         //Conditional: If token && (userID != creatorID) && attending
         //Update attending database
-
-        //}
     }
 
     handleEvents = (events) => {
