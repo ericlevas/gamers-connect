@@ -6,12 +6,10 @@ import EventList from '../components/events/eventlist/EventList';
 import Spinner from '../components/spinner/Spinner';
 import { Redirect } from 'react-router-dom';
 import Logo from '../../media/logo.png'
-import Calendar from './Calendar';
 import FullCalendar, { formatDate } from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { INITIAL_EVENTS, createEventId } from '../event-utils'
 
 export default class EventPage extends Component {
     state = {
@@ -21,9 +19,6 @@ export default class EventPage extends Component {
         isLoading: false,
         selectedEvent: null,
         weekendsVisible: true,
-        currentEvents: [],
-        weekendsVisible: true,
-        currentEvents: [],
         startD: null,
         endD: null,
     };
@@ -315,7 +310,6 @@ export default class EventPage extends Component {
                         selectMirror={true}
                         dayMaxEvents={true}
                         weekends={this.state.weekendsVisible}
-                        initialEvents={INITIAL_EVENTS}
                         events={this.state.events}
                         select={this.handleDateSelect}
                         eventContent={renderEventContent}
