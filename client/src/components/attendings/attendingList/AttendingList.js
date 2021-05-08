@@ -2,7 +2,7 @@ import React from 'react';
 import './AttendingList.css';
 
 const AttendingList= props => (
-    <ul className = "attending__list">
+    <ul>
         {props.attendings.map(attending=>{
             return (
             <li key = {attending._id} className = "attending__item">
@@ -11,7 +11,7 @@ const AttendingList= props => (
                     {new Date(attending.createdAt).toLocaleDateString('en-US')}
                 </div>
                 <div className ="attending__item-actions">
-                    <button className="btn" onClick={props.onDelete.bind(this, attending._id)}>Cancel</button>
+                    <button className="attending-button" onClick={props.onDelete.bind(this, attending._id)}>Cancel</button>
                 </div>
                 
             </li>
@@ -19,6 +19,5 @@ const AttendingList= props => (
         })}
     </ul>   
 );
-
 
 export default AttendingList;

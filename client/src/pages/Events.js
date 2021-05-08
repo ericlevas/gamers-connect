@@ -10,12 +10,13 @@ import FullCalendar, { formatDate } from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import AttendingList from './Attending';
 
 export default class EventPage extends Component {
     state = {
         creating: false,
-        viewing: false,
         events: [],
+        eventInfo: null,
         isLoading: false,
         selectedEvent: null,
         weekendsVisible: true,
@@ -257,22 +258,13 @@ export default class EventPage extends Component {
                             </AuthContext.Consumer>
                         </React.Fragment >
                         <React.Fragment>
-                            {this.state.selectedEvent &&
-                                (<Modal
-                                    title={this.state.selectedEvent.title}
-                                    canCancel
-                                    canConfirm
-                                    onCancel={this.modalCancelHandler}
-                                    onConfirm={this.attendHandler}
-                                    confirmText={this.context.token ? 'Join' : 'Confirm'}
-                                >
-                                    <h1>{this.state.selectedEvent.title}</h1>
-                                    <h2>{this.state.selectedEvent.gameTitle}- {new Date(this.state.selectedEvent.date).toLocaleDateString('en-US')}</h2>
-                                    <p>{this.state.selectedEvent.description}</p>
-                                </Modal>)
+                            <br /><h2>Joined Groups</h2>
+                            {this.state.isLoading ?
+                                (<Spinner />)
+                                :
+                                (<AttendingList />)
                             }
-
-                            <br /><h2>All Events</h2>
+                            <br /><hr /><br /><h2>All Groups</h2>
                             {this.state.isLoading ?
                                 (<Spinner />)
                                 :
@@ -345,20 +337,23 @@ export default class EventPage extends Component {
                             </form>
                         </Modal>
                     )}
-                    {(this.state.viewing) && <Backdrop />}
-                    {
-                        this.state.viewing && (
-                            <Modal
-                                title="Event Name"
-                                canCancel
-                                canConfirm
-                                onCancel={this.modalCancelHandler}
-                                onConfirm={this.attendHandler}
-                                confirmText="Confirm"
-                            >
-                                <p>Would you like to join this event?</p>
-                            </Modal>
-                        )}
+
+                    {(this.state.selectedEvent) && <Backdrop />}
+                    {this.state.selectedEvent &&
+                        (<Modal
+                            title={this.state.selectedEvent.title}
+                            canCancel
+                            canConfirm
+                            onCancel={this.modalCancelHandler}
+                            onConfirm={this.attendHandler}
+                            confirmText={this.context.token ? 'Join' : 'Confirm'}
+                        >
+                            <h2>Game: {this.state.selectedEvent.gameTitle}</h2>
+                            <p>Time: {new Date(this.state.selectedEvent.start).toString()}</p>
+                            <p>Description: {this.state.selectedEvent.description}</p>
+
+                        </Modal>)
+                    }
                 </div>
             </div>
         );
@@ -369,7 +364,7 @@ export default class EventPage extends Component {
             weekendsVisible: !this.state.weekendsVisible
         })
     }
-    
+
     handleDateSelect = (selectInfo) => {
         if (this.context.token) {
             this.setState({ creating: true });
@@ -379,55 +374,54 @@ export default class EventPage extends Component {
         else {
             alert('Please login to create an event.')
         }
-        //let title = prompt('Please enter a new title for your event')
-
         let calendarApi = selectInfo.view.calendar;
-        calendarApi.unselect() // clear date selection
-
-        // if (title) {
-        //   calendarApi.addEvent({
-        //     id: createEventId(),
-        //     title,
-        //     start: selectInfo.startStr,
-        //     end: selectInfo.endStr,
-        //     allDay: selectInfo.allDay
-        //   })
-        // }
+        calendarApi.unselect()
     }
 
     handleEventClick = (clickInfo) => {
         if (this.context.token) {
-            this.setState({ viewing: true });
+
+            this.setState({
+                selectedEvent: {
+                    id: clickInfo.event._id,
+                    title: clickInfo.event.title,
+                    description: clickInfo.event.extendedProps.description,
+                    gameTitle: clickInfo.event.extendedProps.gameTitle,
+                    start: clickInfo.event.start,
+                    end: clickInfo.event.end,
+                    creator: clickInfo.event.extendedProps.creator
+                }
+            })
         }
         else {
-            alert('Please login to view an event.')
+                alert('Please login to view an event.')
+            }
+
+            //Conditional: If !token
+
+            //If user is event owner, include delete button
+            //Conditional: If token && (userID == creatorID)
+            //if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
+            //clickInfo.event.remove()
+            //Update events database and attending database
+
+            //If user is not event owner or member of group, include join button
+            //Conditional: If token && (userID != creatorID) && !attending
+            //Update attending database
+
+            //If user is not event owner but is member of group, include leave button
+            //Conditional: If token && (userID != creatorID) && attending
+            //Update attending database
+
+            //}
         }
 
-        //Conditional: If !token
-
-        //If user is event owner, include delete button
-        //Conditional: If token && (userID == creatorID)
-        //if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-        //clickInfo.event.remove()
-        //Update events database and attending database
-
-        //If user is not event owner or member of group, include join button
-        //Conditional: If token && (userID != creatorID) && !attending
-        //Update attending database
-
-        //If user is not event owner but is member of group, include leave button
-        //Conditional: If token && (userID != creatorID) && attending
-        //Update attending database
-
-        //}
+        handleEvents = (events) => {
+            this.setState({
+                currentEvents: events
+            })
+        }
     }
-
-    handleEvents = (events) => {
-        this.setState({
-            currentEvents: events
-        })
-    }
-}
 
 function renderEventContent(eventInfo) {
     return (
@@ -435,14 +429,5 @@ function renderEventContent(eventInfo) {
             <b>{eventInfo.timeText}</b>
             <i>{eventInfo.event.title}</i>
         </>
-    )
-}
-
-function renderSidebarEvent(event, token) {
-    return (
-        <li key={event.id}>
-            <b>{formatDate(event.start, { year: 'numeric', month: 'short', day: 'numeric' })}</b>
-            <i>{event.title}</i>
-        </li>
     )
 }

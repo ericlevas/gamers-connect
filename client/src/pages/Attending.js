@@ -44,7 +44,7 @@ class AttendingPage extends Component{
             body: JSON.stringify(requestBody),
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' +this.context.token
+                'Authorization': 'Bearer ' + this.context.token
             }
         })
             .then(res => {
