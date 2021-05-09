@@ -19,6 +19,7 @@ export default class EventPage extends Component {
         eventInfo: null,
         isLoading: false,
         selectedEvent: null,
+        myEvent: null,
         weekendsVisible: true,
         startD: null,
         endD: null,
@@ -38,10 +39,6 @@ export default class EventPage extends Component {
     }
 
     static contextType = AuthContext;
-
-    startCreateEventHandler = () => {
-        this.setState({ creating: true });
-    };
 
     fetchEvents() {
         this.setState({ isLoading: true });
@@ -173,7 +170,7 @@ export default class EventPage extends Component {
     };
 
     modalCancelHandler = () => {
-        this.setState({ creating: false, selectedEvent: null, viewing: false });
+        this.setState({ creating: false, selectedEvent: null, myEvent: null });
     };
 
     showDetailHandler = eventId => {
@@ -223,6 +220,7 @@ export default class EventPage extends Component {
                 this.setState({ selectedEvent: null });
 
             })
+
             .catch(err => {
                 console.log(err);
             });
@@ -259,11 +257,7 @@ export default class EventPage extends Component {
                         </React.Fragment >
                         <React.Fragment>
                             <br /><h2>Joined Groups</h2>
-                            {this.state.isLoading ?
-                                (<Spinner />)
-                                :
-                                (<AttendingList />)
-                            }
+                            <AttendingList />
                             <br /><hr /><br /><h2>All Groups</h2>
                             {this.state.isLoading ?
                                 (<Spinner />)
@@ -349,8 +343,29 @@ export default class EventPage extends Component {
                             confirmText={this.context.token ? 'Join' : 'Confirm'}
                         >
                             <h2>Game: {this.state.selectedEvent.gameTitle}</h2>
-                            <p>Time: {new Date(this.state.selectedEvent.start).toString()}</p>
+                            <p>Starts: {new Date(this.state.selectedEvent.start).toString()}</p>
+                            <p>Ends: {new Date(this.state.selectedEvent.end).toString()}</p>
                             <p>Description: {this.state.selectedEvent.description}</p>
+                            <p>Would you like to join this group?</p>
+
+                        </Modal>)
+                    }
+
+                    {(this.state.myEvent) && <Backdrop />}
+                    {this.state.myEvent &&
+                        (<Modal
+                            title={this.state.myEvent.title}
+                            canCancel
+                            canConfirm
+                            onCancel={this.modalCancelHandler}
+                            onConfirm={this.deleteHandler}
+                            confirmText={this.context.token ? 'Delete' : 'Confirm'}
+                        >
+                            <h2>Game: {this.state.myEvent.gameTitle}</h2>
+                            <p>Starts: {new Date(this.state.myEvent.start).toString()}</p>
+                            <p>Ends: {new Date(this.state.myEvent.end).toString()}</p>
+                            <p>Description: {this.state.myEvent.description}</p>
+                            <p>This is your event. Would you like to delete it?</p>
 
                         </Modal>)
                     }
@@ -379,49 +394,49 @@ export default class EventPage extends Component {
     }
 
     handleEventClick = (clickInfo) => {
-        if (this.context.token) {
+        if (this.context.token && (this.context.userId != clickInfo.event.extendedProps.creator._id)) {
+            //If user is not already a member, include join button
+            //Conditional: If !attending
+            //Update attending database
+
+            //If user is member, include leave button
+            //Conditional: If token && (userID != creatorID) && attending
+            //Update attending database
 
             this.setState({
                 selectedEvent: {
-                    id: clickInfo.event._id,
+                    _id: clickInfo.event.extendedProps._id,
                     title: clickInfo.event.title,
                     description: clickInfo.event.extendedProps.description,
                     gameTitle: clickInfo.event.extendedProps.gameTitle,
                     start: clickInfo.event.start,
                     end: clickInfo.event.end,
-                    creator: clickInfo.event.extendedProps.creator
+                }
+            })
+        }
+        else if (this.context.token && (this.context.userId == clickInfo.event.extendedProps.creator._id)) {
+            this.setState({
+                myEvent: {
+                    _id: clickInfo.event.extendedProps._id,
+                    title: clickInfo.event.title,
+                    description: clickInfo.event.extendedProps.description,
+                    gameTitle: clickInfo.event.extendedProps.gameTitle,
+                    start: clickInfo.event.start,
+                    end: clickInfo.event.end,
                 }
             })
         }
         else {
-                alert('Please login to view an event.')
-            }
-
-            //Conditional: If !token
-
-            //If user is event owner, include delete button
-            //Conditional: If token && (userID == creatorID)
-            //if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-            //clickInfo.event.remove()
-            //Update events database and attending database
-
-            //If user is not event owner or member of group, include join button
-            //Conditional: If token && (userID != creatorID) && !attending
-            //Update attending database
-
-            //If user is not event owner but is member of group, include leave button
-            //Conditional: If token && (userID != creatorID) && attending
-            //Update attending database
-
-            //}
-        }
-
-        handleEvents = (events) => {
-            this.setState({
-                currentEvents: events
-            })
+            alert('Please login to view an event.')
         }
     }
+
+    handleEvents = (events) => {
+        this.setState({
+            currentEvents: events
+        })
+    }
+}
 
 function renderEventContent(eventInfo) {
     return (
