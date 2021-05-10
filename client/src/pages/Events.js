@@ -11,6 +11,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import AttendingList from './Attending';
+import CreatedEventList from '../components/events/eventlist/CreatedEventList';
 
 export default class EventPage extends Component {
     state = {
@@ -258,7 +259,17 @@ export default class EventPage extends Component {
                         <React.Fragment>
                             <br /><h2>Joined Groups</h2>
                             <AttendingList />
-                            <br /><hr /><br /><h2>All Groups</h2>
+                            <br /><hr /><br />
+                            <h2>My Groups</h2>
+                                {this.state.isLoading ?
+                                (<Spinner/>)
+                                : (<CreatedEventList
+                                    events={this.state.events}
+                                    authUserId={this.context.userId}
+                                    onViewDetail={this.showDetailHandler}
+                                />)  
+                            }
+                            <h2>All Groups</h2>
                             {this.state.isLoading ?
                                 (<Spinner />)
                                 :
