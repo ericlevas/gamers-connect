@@ -8,7 +8,7 @@ const AttendingList= props => (
             <li key = {attending._id} className = "attending__item">
                 <div className="attending__item-data">
                     {attending.event.title} - {' '}
-                    {new Date(attending.createdAt).toLocaleDateString('en-US')}
+                    {new Date(attending.event.start).toLocaleDateString('en-US')}
                 </div>
                 <div className ="attending__item-actions">
                     <button className="attending-button" onClick={props.onDelete.bind(this, attending._id)}>Cancel</button>
