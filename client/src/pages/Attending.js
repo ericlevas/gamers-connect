@@ -14,7 +14,6 @@ class AttendingPage extends Component{
 
     static contextType = AuthContext;
 
-
     componentDidMount() {
         this.fetchAttendingEvents();
     }
@@ -57,7 +56,7 @@ class AttendingPage extends Component{
             .then(resData => {
                 const attendingEvents = resData.data.attendings;
                 if(this.isActive){
-                    this.setState({ attendingEvents: attendingEvents,isLoading:false});
+                    this.setState({ attendingEvents: attendingEvents, isLoading:false});
                 }
             })
             .catch(err => {
