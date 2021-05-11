@@ -2,11 +2,11 @@ import React from 'react';
 import CreatedEventItem from '../eventItem/CreatedEventItem.js';
 
 const createdEventList = props => {
-    const events = props.events.map(event => {
+    const events = props.events.map((event,index) => {
         return (
             event.creator._id == props.authUserId ?
             (<CreatedEventItem
-                key={event._id}
+                key={index}
                 eventId={event._id}
                 title={event.title}
                 gameTitle={event.gameTitle}
