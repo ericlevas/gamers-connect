@@ -219,7 +219,6 @@ export default class EventPage extends Component {
             .then(resData => {
                 console.log(resData);
                 this.setState({ selectedEvent: null });
-
             })
 
             .catch(err => {
@@ -243,11 +242,7 @@ export default class EventPage extends Component {
                                             {context.token &&
                                                 <React.Fragment>
                                                     <h2>Welcome to Gamers Connect!</h2>
-                                                    <p className="login-email">You are logged in.</p>
-                                                    <button type="button" className="submit-button" onClick={this.manageAccount}>Manage Account</button>
-                                                    <div className="divider" />
-                                                    <button className="signup-button" onClick={context.logout}>Logout</button>
-                                                    <br /><br />
+                                                    <p className="login-email">You are logged in.<button className="logout-button" onClick={context.logout}>Logout</button></p>
                                                 </React.Fragment>
                                             }
                                             <hr />
@@ -257,19 +252,21 @@ export default class EventPage extends Component {
                             </AuthContext.Consumer>
                         </React.Fragment >
                         <React.Fragment>
-                            <br /><h2>Joined Groups</h2>
+                            <br />
+                            <h2>Joined Groups</h2>
                             <AttendingList />
                             <br /><hr /><br />
                             <h2>My Groups</h2>
-                                {this.state.isLoading ?
-                                (<Spinner/>)
+                            {this.state.isLoading ?
+                                (<Spinner />)
                                 : (<CreatedEventList
                                     events={this.state.events}
                                     authUserId={this.context.userId}
                                     onViewDetail={this.showDetailHandler}
-                                />)  
+                                />)
                             }
-                            <h2>All Groups</h2>
+                            <br /><hr /><br />
+                            <h2>Other Groups</h2>
                             {this.state.isLoading ?
                                 (<Spinner />)
                                 :
@@ -361,25 +358,6 @@ export default class EventPage extends Component {
 
                         </Modal>)
                     }
-
-                    {(this.state.myEvent) && <Backdrop />}
-                    {this.state.myEvent &&
-                        (<Modal
-                            title={this.state.myEvent.title}
-                            canCancel
-                            canConfirm
-                            onCancel={this.modalCancelHandler}
-                            onConfirm={this.deleteHandler}
-                            confirmText={this.context.token ? 'Delete' : 'Confirm'}
-                        >
-                            <h2>Game: {this.state.myEvent.gameTitle}</h2>
-                            <p>Starts: {new Date(this.state.myEvent.start).toString()}</p>
-                            <p>Ends: {new Date(this.state.myEvent.end).toString()}</p>
-                            <p>Description: {this.state.myEvent.description}</p>
-                            <p>This is your event. Would you like to delete it?</p>
-
-                        </Modal>)
-                    }
                 </div>
             </div>
         );
@@ -405,29 +383,9 @@ export default class EventPage extends Component {
     }
 
     handleEventClick = (clickInfo) => {
-        if (this.context.token && (this.context.userId != clickInfo.event.extendedProps.creator._id)) {
-            //If user is not already a member, include join button
-            //Conditional: If !attending
-            //Update attending database
-
-            //If user is member, include leave button
-            //Conditional: If token && (userID != creatorID) && attending
-            //Update attending database
-
+        if (this.context.token) {
             this.setState({
                 selectedEvent: {
-                    _id: clickInfo.event.extendedProps._id,
-                    title: clickInfo.event.title,
-                    description: clickInfo.event.extendedProps.description,
-                    gameTitle: clickInfo.event.extendedProps.gameTitle,
-                    start: clickInfo.event.start,
-                    end: clickInfo.event.end,
-                }
-            })
-        }
-        else if (this.context.token && (this.context.userId == clickInfo.event.extendedProps.creator._id)) {
-            this.setState({
-                myEvent: {
                     _id: clickInfo.event.extendedProps._id,
                     title: clickInfo.event.title,
                     description: clickInfo.event.extendedProps.description,

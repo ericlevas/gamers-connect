@@ -169,8 +169,7 @@ export default class AuthPage extends Component {
                                 <input type="password" className="form-control" placeholder="Password" ref={this.passwordEl} />
                                 <br />
                                 {this.state.flag}
-                                Forgot <a href="forgot_password.html" className="a">Password?</a>
-                                <br /><br />
+                                <br />
                                 <button type="submit" className="submit-button">Submit</button>
                                 <div className="divider" />
                                 <button type="button" className="signup-button" onClick={this.switchModeHandler}>Switch to {this.state.isLogin ? 'Signup' : 'Login'}</button>
