@@ -8,17 +8,21 @@ import EventPage from './pages/Events';
 
 export default class App extends React.Component {
   state = {
-    token: null,
-    userId: null,    
+    token: this.context.token,
+    userId: this.context.userId,
+    email: this.context.email,
+    isAuthenticated: this.context.isAuthenticated,
   };
 
-  login = (token, userId, tokenExpiration) => {
-    this.setState({ token: token, userId: userId });
+  login = (token, userId, email, tokenExpiration) => {
+    this.setState({ token: token, userId: userId, email: email, isAuthenticated: true });
   };
 
   logout = () => {
-    this.setState({ token: null, userId: null });
+    this.setState({ token: null, userId: null, email: null, isAuthenticated: false });
   };
+
+  static contextType = AuthContext;
 
   render() {
     return (
@@ -28,6 +32,8 @@ export default class App extends React.Component {
             <AuthContext.Provider value={{
               token: this.state.token,
               userId: this.state.userId,
+              email: this.state.email,
+              isAuthenticated: this.state.isAuthenticated,
               login: this.login,
               logout: this.logout
             }}>
@@ -42,11 +48,14 @@ export default class App extends React.Component {
                 {!this.state.token && (
                   <Route path="/auth" component={AuthPage} />
                 )}
-                <Route path="/events" component={EventPage} />
+                {this.state.token && (
+                  <Route path="/events" component={EventPage} />
+                )}
                 {this.state.token && (
                   <Route path="/attending" component={AttendingPage} />
                 )}
                 {!this.state.token && <Redirect to="/auth" exact />}
+                {this.state.token && <Redirect from="/events" to="/events" exact />}
               </Switch>
             </AuthContext.Provider>
           </React.Fragment>
