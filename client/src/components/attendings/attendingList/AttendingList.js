@@ -11,9 +11,8 @@ const AttendingList= props => (
                     {new Date(attending.event.start).toLocaleDateString('en-US')}
                 </div>
                 <div className ="attending__item-actions">
-                    <button className="attending-button" onClick={props.onDelete.bind(this, attending._id)}>Cancel</button>
+                    <button className="attending-button" onClick={props.onDelete.bind(this, attending._id)}>Leave</button>
                 </div>
-                
             </li>
             );
         })}
