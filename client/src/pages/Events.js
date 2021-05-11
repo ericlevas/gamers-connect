@@ -307,9 +307,6 @@ export default class EventPage extends Component {
                             eventContent={renderEventContent}
                             eventClick={this.handleEventClick}
                             eventsSet={this.handleEvents}
-                        //eventAdd={function(){}}
-                        //eventChange={function(){}}
-                        //eventRemove={function(){}}
                         />
                         {(this.state.creating) && <Backdrop />}
                         {this.state.creating && (
@@ -371,15 +368,29 @@ export default class EventPage extends Component {
 
     handleDateSelect = (selectInfo) => {
         if (this.context.token) {
-            this.setState({ creating: true });
-            this.setState({ startD: selectInfo.startStr });
-            this.setState({ endD: selectInfo.endStr });
+            if (selectInfo.view.type == "dayGridMonth") {
+                console.log(selectInfo.startStr);
+                if (this.context.token) {
+                    this.setState({ creating: true });
+                    this.setState({ startD: selectInfo.startStr + 'T00:00:00-07:00' });
+                    this.setState({ endD: selectInfo.endStr + 'T00:00:00-07:00' });
+                    console.log(selectInfo.startStr);
+                }
+            }
+            else {
+                if (this.context.token) {
+                    this.setState({ creating: true });
+                    this.setState({ startD: selectInfo.startStr });
+                    this.setState({ endD: selectInfo.endStr });
+                    console.log(selectInfo.startStr);
+                }
+            }
+            let calendarApi = selectInfo.view.calendar;
+            calendarApi.unselect()
         }
         else {
             alert('Please login to create an event.')
         }
-        let calendarApi = selectInfo.view.calendar;
-        calendarApi.unselect()
     }
 
     handleEventClick = (clickInfo) => {
