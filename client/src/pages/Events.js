@@ -316,7 +316,7 @@ export default class EventPage extends Component {
                     {(this.state.creating) && <Backdrop />}
                     {this.state.creating && (
                         <Modal
-                            title="New Event"
+                            title="Create a Group"
                             canCancel
                             canConfirm
                             onCancel={this.modalCancelHandler}
