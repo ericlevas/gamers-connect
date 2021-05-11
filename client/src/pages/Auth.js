@@ -97,6 +97,7 @@ export default class AuthPage extends Component {
                     this.context.login(
                         resData.data.login.token,
                         resData.data.login.userId,
+                        email,
                         resData.data.login.tokenExpiration
                     );
                 }
@@ -123,7 +124,7 @@ export default class AuthPage extends Component {
             `,
             variables: {
                 email: email,
-                password: password
+                password: password,
             }
         };
 
@@ -146,6 +147,7 @@ export default class AuthPage extends Component {
                     this.context.login(
                         resData.data.login.token,
                         resData.data.login.userId,
+                        email,
                         resData.data.login.tokenExpiration
                     );
                 }
