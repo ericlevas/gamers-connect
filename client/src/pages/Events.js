@@ -242,7 +242,6 @@ export default class EventPage extends Component {
                                             <React.Fragment>
                                                 <h2>Welcome to Gamers Connect!</h2>
                                                 <p className="login-email">You are logged in as {this.context.email}.</p>
-                                                
                                                 <button className="logout-button" onClick={context.logout}>Logout</button>
                                             </React.Fragment>
                                         }

@@ -24,10 +24,7 @@ export default class App extends React.Component {
 
   logout = () => {
     this.setState({ token: null, userId: null, email: null, isAuthenticated: false });
-    localStorage.setItem("token", null);
-    localStorage.setItem("userId", null);
-    localStorage.setItem("email", null);
-    localStorage.setItem("isAuthenticated", false);
+    localStorage.clear();
   };
 
   static contextType = AuthContext;
