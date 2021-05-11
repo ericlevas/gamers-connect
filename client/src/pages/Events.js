@@ -369,7 +369,6 @@ export default class EventPage extends Component {
     handleDateSelect = (selectInfo) => {
         if (this.context.token) {
             if (selectInfo.view.type == "dayGridMonth") {
-                console.log(selectInfo.startStr);
                 if (this.context.token) {
                     this.setState({ creating: true });
                     this.setState({ startD: selectInfo.startStr + 'T00:00:00-07:00' });
