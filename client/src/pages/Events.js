@@ -217,8 +217,8 @@ export default class EventPage extends Component {
                 return res.json();
             })
             .then(resData => {
-                console.log(resData);
                 this.setState({ selectedEvent: null });
+                window.location.reload(false);  
             })
 
             .catch(err => {
