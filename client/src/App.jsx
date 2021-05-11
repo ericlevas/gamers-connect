@@ -16,10 +16,18 @@ export default class App extends React.Component {
 
   login = (token, userId, email, tokenExpiration) => {
     this.setState({ token: token, userId: userId, email: email, isAuthenticated: true });
+    localStorage.setItem("token", token);
+    localStorage.setItem("userId", userId);
+    localStorage.setItem("email", email);
+    localStorage.setItem("isAuthenticated", true);
   };
 
   logout = () => {
     this.setState({ token: null, userId: null, email: null, isAuthenticated: false });
+    localStorage.setItem("token", null);
+    localStorage.setItem("userId", null);
+    localStorage.setItem("email", null);
+    localStorage.setItem("isAuthenticated", false);
   };
 
   static contextType = AuthContext;
