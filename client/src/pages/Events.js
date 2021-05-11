@@ -218,7 +218,7 @@ export default class EventPage extends Component {
             })
             .then(resData => {
                 this.setState({ selectedEvent: null });
-                window.location.reload(false);  
+                window.location.reload(false);
             })
 
             .catch(err => {
@@ -353,6 +353,21 @@ export default class EventPage extends Component {
 
                             </Modal>)
                         }
+                        {(this.state.myEvent) && <Backdrop />}
+                        {this.state.myEvent &&
+                            (<Modal
+                                title={this.state.myEvent.title}
+                                canCancel
+                                onCancel={this.modalCancelHandler}
+                            >
+                                <h2>Game: {this.state.myEvent.gameTitle}</h2>
+                                <p>Starts: {new Date(this.state.myEvent.start).toString()}</p>
+                                <p>Ends: {new Date(this.state.myEvent.end).toString()}</p>
+                                <p>Description: {this.state.myEvent.description}</p>
+                                <p>This is your group.</p>
+
+                            </Modal>)
+                        }
                     </div>
                 </div>
             )
@@ -394,17 +409,33 @@ export default class EventPage extends Component {
 
     handleEventClick = (clickInfo) => {
         if (this.context.token) {
-            this.setState({
-                selectedEvent: {
-                    _id: clickInfo.event.extendedProps._id,
-                    title: clickInfo.event.title,
-                    description: clickInfo.event.extendedProps.description,
-                    gameTitle: clickInfo.event.extendedProps.gameTitle,
-                    start: clickInfo.event.start,
-                    end: clickInfo.event.end,
-                }
-            })
+            if (this.context.userId == clickInfo.event.extendedProps.creator._id) {
+                this.setState({
+                    myEvent: {
+                        _id: clickInfo.event.extendedProps._id,
+                        title: clickInfo.event.title,
+                        description: clickInfo.event.extendedProps.description,
+                        gameTitle: clickInfo.event.extendedProps.gameTitle,
+                        start: clickInfo.event.start,
+                        end: clickInfo.event.end,
+                    }
+                })
+            }
+
+            else {
+                this.setState({
+                    selectedEvent: {
+                        _id: clickInfo.event.extendedProps._id,
+                        title: clickInfo.event.title,
+                        description: clickInfo.event.extendedProps.description,
+                        gameTitle: clickInfo.event.extendedProps.gameTitle,
+                        start: clickInfo.event.start,
+                        end: clickInfo.event.end,
+                    }
+                })
+            }
         }
+
         else {
             alert('Please login to view an event.')
         }
