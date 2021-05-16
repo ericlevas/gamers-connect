@@ -1,4 +1,4 @@
 .vscode/
-server/node_modules/
-client/node_modules/
-server/nodemon.json
+**/node_modules/
+**/node_modules/
+**/nodemon.json
