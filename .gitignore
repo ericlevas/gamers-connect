@@ -1,1 +1,4 @@
-nodemon.json
+.vscode/
+server/node_modules/
+client/node_modules/
+server/nodemon.json
