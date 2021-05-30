@@ -1,3 +1,4 @@
+
 ![logo_image](client/media/logo_lrg.png)
 # Gamers Connect Documentation
 ## Purpose
