@@ -1,0 +1,39 @@
+.event-button{
+    background-color: rgb(118, 130, 142);
+    border: none;
+    border-radius: 4px;
+    color: white;
+    text-align: center;
+    width: 100%;
+}
+
+.event-button:hover {
+    background-color: rgb(143, 172, 182);
+  }
+
+.events__list-item{
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    border: 1px solid white;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.events__list-item h1{
+    margin:0;
+    font-size: 1rem;
+    color: white;
+}
+
+.events__list-item h2{
+    margin: 0;
+    font-size: 1rem;
+    color: grey;
+}
+
+.events__list-item p{
+    margin: 0;
+}
+

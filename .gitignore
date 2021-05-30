@@ -1,0 +1,6 @@
+#first line
+.vscode/
+**/node_modules/
+**/node_modules/
+**/nodemon.json
+node_modules/
