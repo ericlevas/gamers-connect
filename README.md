@@ -84,8 +84,6 @@ npm start # builds and opens a web browser
 ```
 After both the client and server are running, the web application can be accessed from your local machine at http://localhost:8080/
 
-## Instructions for Use
-
 ## Project Management 
 Ensure that we follow git flow branching structure
 
